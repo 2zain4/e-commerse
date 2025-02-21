@@ -15,6 +15,18 @@ import NotFound from "./Pages/NotFound/NotFound";
 import { Offline, Online } from "react-detect-offline";
 import CartContextProvider from "./Context/CartContext";
 import { Toaster } from "react-hot-toast";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import Checkout from "./Pages/Checkout/Checkout";
+import AllOrders from "./Pages/AllOrders/AllOrders";
+import WishList from "./Pages/WishList/WishList";
+import VerifyCode from "./Pages/VerifyCode/VerifyCode";
+
+import { Provider } from "react-redux";
+import { store } from "./Redux/Store";
+import Brands from "./Pages/Brands/Brands";
+import ForgetPassword from "./Pages/ForgetPassword/ForgetPassword";
+import ResetPassword from "./Pages/ResetPassword/ResetPassword";
 
 export default function App() {
   const routes = createBrowserRouter([
@@ -46,6 +58,34 @@ export default function App() {
             </ProtectedRoutes>
           ),
         },
+
+        {
+          path: "checkout",
+          element: (
+            <ProtectedRoutes>
+              <Checkout />
+            </ProtectedRoutes>
+          ),
+        },
+
+        {
+          path: "wishlist",
+          element: (
+            <ProtectedRoutes>
+              <WishList />
+            </ProtectedRoutes>
+          ),
+        },
+
+        {
+          path: "allorders",
+          element: (
+            <ProtectedRoutes>
+              <AllOrders />
+            </ProtectedRoutes>
+          ),
+        },
+
         {
           path: "cart",
           element: (
@@ -54,6 +94,24 @@ export default function App() {
             </ProtectedRoutes>
           ),
         },
+
+     
+
+       
+
+       
+       
+
+        
+        {
+          path: "brands",
+          element: (
+            <ProtectedRoutes>
+              <Brands />
+            </ProtectedRoutes>
+          ),
+        },
+
         {
           path: "producdetails/:productId",
           element: (
@@ -63,21 +121,34 @@ export default function App() {
           ),
         },
         { path: "login", element: <Login /> },
+        { path: "forgetpassword", element: <ForgetPassword /> },
+        { path: "verifycode", element: <VerifyCode /> },
         { path: "Register", element: <Register /> },
+        { path: "resetpassword", element: <ResetPassword /> },
+
+
+        
         { path: "*", element: <NotFound /> },
       ],
     },
   ]);
 
+  const queryClient = new QueryClient();
+  
   return (
-    <TokenContextProvider>
-      <CartContextProvider>
-        <CounterContextProvider>
-          <Offline>Only shown offline (surprise!)</Offline>
-          <Toaster position="top-right"/>
-          <RouterProvider router={routes}></RouterProvider>;
-        </CounterContextProvider>
-      </CartContextProvider>
-    </TokenContextProvider>
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <TokenContextProvider>
+          <CartContextProvider>
+            <CounterContextProvider>
+              <Offline>Only shown offline (surprise!)</Offline>
+              <Toaster position="top-right" />
+              <RouterProvider router={routes}></RouterProvider>;
+              <ReactQueryDevtools initialIsOpen={false} />
+            </CounterContextProvider>
+          </CartContextProvider>
+        </TokenContextProvider>
+      </QueryClientProvider>
+    </Provider>
   );
 }

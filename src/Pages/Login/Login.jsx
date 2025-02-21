@@ -1,43 +1,46 @@
 import { useFormik } from "formik";
-// import styles from "./Register.module.css";
-import { Link, NavLink, useNavigate } from "react-router-dom"; // تأكد من أنك مثبت react-router-dom
+import { Link, NavLink, useNavigate } from "react-router-dom"; 
 import axios from "axios";
 import { useContext, useState } from "react";
 import { tokenContext } from "../../Context/TokenContext";
+import { Helmet } from "react-helmet";
 
 export default function Login() {
   const [errorMsg, setErrorMsg] = useState(null);
   const [isLoading, setIsLoadeing] = useState(false);
   const navigate=useNavigate()
   const { token, settoken } = useContext(tokenContext);
-console.log("Current Token:", token);
   
   const initialValues = {
     email: "",
     password: "",
   };
 
-  async function handleLogin(data) {
+  async function handleLogin(values) {
     setIsLoadeing(true);
-    console.log(data);
-    let x = await axios
-    .post("https://ecommerce.routemisr.com/api/v1/auth/signin", data)
-    .then((response) => {
-      settoken(response.data.token);
-      localStorage.setItem("token", response.data.token);
+  
+    try {
+      const response = await axios.post(
+        "https://ecommerce.routemisr.com/api/v1/auth/signin",
+        values
+      );
+  
+      const userToken = response.data.token;
+      localStorage.setItem("token", userToken);
+      settoken(userToken);
+  
       setErrorMsg(null);
       setIsLoadeing(false);
-      navigate('/');
-      
-    })
-    .catch((error) => {
-      setErrorMsg(error.response.data.message);
+  
+      navigate("/"); 
+      window.location.reload(); 
+    } catch (error) {
+      setErrorMsg(error.response?.data?.message || "error");
       setIsLoadeing(false);
-    });
+    }
   }
 
   function validateData(data) {
-    console.log(data);
 
     let errors = {};
 
@@ -73,6 +76,8 @@ console.log("Current Token:", token);
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900  p-3  w-full">
+      <Helmet><title>Login</title></Helmet>
+      
       <h1 className="text-3xl font-bold my-3  w-1/2 mx-auto ">Login Now</h1>
 
       <form className=" w-1/2 mx-auto" onSubmit={formik.handleSubmit}>
@@ -128,9 +133,9 @@ console.log("Current Token:", token);
         
 
         <div className="flex justify-between">
-        <small>
-  New account <Link to={'/register'}>Register</Link>
-</small>
+        <p className="font-bold ">
+   <Link to={'/forgetpassword'} className="hover:text-[#3FA43F]  " >forget your password ?</Link>
+</p>
      
   {isLoading ? (
     <button

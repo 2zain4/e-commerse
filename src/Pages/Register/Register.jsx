@@ -1,13 +1,14 @@
 import { useFormik } from "formik";
 import styles from "./Register.module.css";
-import { Link, NavLink, useNavigate } from "react-router-dom"; // تأكد من أنك مثبت react-router-dom
+import { Link, NavLink, useNavigate } from "react-router-dom"; 
 import axios from "axios";
 import { useState } from "react";
+import { Helmet } from "react-helmet";
 
 export default function Register() {
   const [errorMsg, setErrorMsg] = useState(null);
   const [isLoading, setIsLoadeing] = useState(false);
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const initialValues = {
     name: "",
     email: "",
@@ -18,16 +19,14 @@ export default function Register() {
 
   async function handleRegister(data) {
     setIsLoadeing(true);
-    console.log(data);
-    // https://ecommerce.routemisr.com/api/v1/products
     let x = await axios
       .post("https://ecommerce.routemisr.com/api/v1/auth/signup", data)
       .then((response) => {
-        console.log(response)
-      
+        console.log(response);
+
         setErrorMsg(null);
         setIsLoadeing(false);
-        navigate('/login')
+        navigate("/login");
       })
       .catch((error) => {
         setErrorMsg(error.response.data.message);
@@ -36,11 +35,10 @@ export default function Register() {
   }
 
   function validateData(data) {
-    console.log(data);
 
     let errors = {};
 
-    const NameRegex = /^[a-zA-Z]{8,}$/;
+    const NameRegex = /^[a-zA-Z]{3,}$/;
     const EmailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
     const passwordRegex = /^[A-Za-z1-9]{8,12}$/;
     const phoneRegex = /^01[0125][0-9]{8}$/;
@@ -51,6 +49,7 @@ export default function Register() {
       errors.name = "name min length is 3";
     }
 
+    
     if (data.email === "") {
       errors.email = "Email required";
     } else if (!EmailRegex.test(data.email)) {
@@ -87,14 +86,17 @@ export default function Register() {
   });
 
   return (
+    
     <section className="bg-gray-50 dark:bg-gray-900  p-3  w-full mx-auto">
+      <Helmet><title> Register</title></Helmet>
+      
       <h1 className="text-3xl font-bold my-3  w-1/2 mx-auto ">Register Now</h1>
 
       <form className=" w-1/2 mx-auto" onSubmit={formik.handleSubmit}>
         {errorMsg && (
           <div className="bg-red-300 rounded-md p-3 my-2">{errorMsg}</div>
         )}
-        <div className="mb-5">
+        <div className="mb-5  w-5/6">
           <label
             htmlFor="Name"
             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -116,7 +118,7 @@ export default function Register() {
           )}
         </div>
 
-        <div className="mb-5">
+        <div className="mb-5  w-5/6">
           <label
             htmlFor="Email"
             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -138,7 +140,7 @@ export default function Register() {
           )}
         </div>
 
-        <div className="mb-5">
+        <div className="mb-5  w-5/6">
           <label
             htmlFor="password"
             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -160,7 +162,7 @@ export default function Register() {
           )}
         </div>
 
-        <div className="mb-5">
+        <div className="mb-5  w-5/6">
           <label
             htmlFor="rePassword"
             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -182,7 +184,7 @@ export default function Register() {
           )}
         </div>
 
-        <div className="mb-5">
+        <div className="mb-5  w-5/6">
           <label
             htmlFor="phone"
             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -205,23 +207,23 @@ export default function Register() {
         </div>
 
         <div className="flex justify-end">
-  {isLoading ? (
-    <button
-      className="text-white border bg-gray-400 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 cursor-not-allowed"
-      disabled
-    >
-      Loading...
-    </button>
-  ) : (
-    <button
-      type="submit"
-      className="text-white border bg-[#4FA74F] disabled:border disabled:border-slate-500 disabled:bg-transparent disabled:text-slate-500 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
-      disabled={!formik.isValid}
-    >
-      Register Now
-    </button>
-  )}
-</div>
+          {isLoading ? (
+            <button
+              className="text-white border bg-gray-400 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 cursor-not-allowed"
+              disabled
+            >
+              Loading...
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="text-white border bg-[#4FA74F] disabled:border disabled:border-slate-500 disabled:bg-transparent disabled:text-slate-500 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
+              disabled={!formik.isValid}
+            >
+              Register Now
+            </button>
+          )}
+        </div>
       </form>
     </section>
   );

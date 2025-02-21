@@ -5,53 +5,53 @@ import Loader from "./Loader/Loader";
 import toast from "react-hot-toast";
 import { CartContext } from "../Context/CartContext";
 
-
-export default function LatestProducts() {
+export default function LatestProducts({ searchQuery }) {
   const [products, setProducts] = useState([]);
+  const { addTOCart, setNumOfCartItems, setCartId } = useContext(CartContext);
 
   async function getProducts() {
     try {
       const res = await axios.get("https://ecommerce.routemisr.com/api/v1/products");
-      console.log(res.data.data); 
-      setProducts(res.data.data); 
+      setProducts(res.data.data);
     } catch (err) {
       console.error(err);
     }
   }
 
   useEffect(() => {
-    getProducts(); 
+    getProducts();
   }, []);
 
-const {addTOCart} = useContext(CartContext )
-
+  // دالة لإضافة المنتج إلى العربة
   async function addProduct(id) {
     let response = await addTOCart(id);
     if (response.status === 'success') {
+      setNumOfCartItems(response.numOfCartItems);
+      setCartId(response.cartId);
       toast.success('It has been successfully added. 🛺', {
-        style: {
-          backgroundColor: '#0aad0a' 
-        }
+        style: { backgroundColor: '#0aad0a' }
       });
-    }else{
-      toast.error('It has been successfully add',{
-        style: {
-          backgroundColor: 'red' 
-        }
-      } )
+    } else {
+      toast.error('Failed to add product', {
+        style: { backgroundColor: 'red' }
+      });
     }
   }
 
-  return <div className="row">
+  const filteredProducts = products.filter(product =>
+    product.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-{products.length > 0 ?
- products.map((product) => (
-<div className=" p-2 w-1/4   sm:w-1/2 md:w-1/3 lg:w-1/4  " key={product.id}>
-
-<ProductItem product={product} addProduct={addProduct} />
-
-</div> )):
-<Loader/>
-}
-  </div>
+  return (
+    <div className="row">
+      {filteredProducts.length > 0 ? 
+        filteredProducts.map((product) => (
+          <div className="p-2 w-1/4 sm:w-1/2 md:w-1/3 lg:w-1/4" key={product.id}>
+            <ProductItem product={product} addProduct={addProduct} />
+          </div>
+        )) :
+        <p>No products found</p>
+      }
+    </div>
+  );
 }

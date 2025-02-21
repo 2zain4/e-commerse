@@ -10,8 +10,7 @@ import toast from "react-hot-toast";
 export default function ProducDetails() {
   const { productId } = useParams();
   const [details, setDetails] = useState({});
-
-const {addTOCart} = useContext(CartContext)
+const {addTOCart , setNumOfCartItems , setCartId } = useContext(CartContext)
 
   const CustomPrevArrow = (props) => {
     const { onClick } = props;
@@ -54,9 +53,11 @@ const {addTOCart} = useContext(CartContext)
     }
   }
 
-  async function addProduct(id) {
+   async function addProduct(id) {
     let response = await addTOCart(id);
     if (response.status === 'success') {
+      setNumOfCartItems(response.numOfCartItems);
+      setCartId(response.cartId);
       toast.success('It has been successfully added. 🛺', {
         style: {
           backgroundColor: '#0aad0a' 
@@ -99,7 +100,7 @@ const {addTOCart} = useContext(CartContext)
         <div className="w-2/3 p-4 flex flex-col justify-center items-center">
           <div className="inner p-4">
             {" "}
-            <h2 className="font-medium text-3xl">{details.title}</h2>
+            <h2 className="font-medium text-3xl">{details.title} </h2>
             <p className="font-normal text-base">{details.description}</p>
             <div className="flex justify-between w-full">
               <span>{details.price} EGP</span>

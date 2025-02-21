@@ -35,8 +35,8 @@ const settings = {
   speed: 500,
   slidesToShow: 1,
   slidesToScroll: 1 ,
-  nextArrow: <CustomNextArrow />, // زر التقدم مخصص
-  prevArrow: <CustomPrevArrow />, // زر الرجوع مخصص
+  nextArrow: <CustomNextArrow />, 
+  prevArrow: <CustomPrevArrow />, 
 };
 
 export default function MainSlider() {

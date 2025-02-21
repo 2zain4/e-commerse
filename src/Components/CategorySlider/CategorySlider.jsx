@@ -28,13 +28,13 @@ const CustomNextArrow = (props) => {
 };
 
 const settings = {
-  dots: false, // إخفاء النقاط السفلية
+  dots: false, 
   infinite: true,
   speed: 500,
   slidesToShow: 6,
   slidesToScroll: 1,
-  nextArrow: <CustomNextArrow />, // زر التقدم مخصص
-  prevArrow: <CustomPrevArrow />, // زر الرجوع مخصص
+  nextArrow: <CustomNextArrow />,
+  prevArrow: <CustomPrevArrow />, 
   responsive: [
     {
       breakpoint: 1200,
@@ -85,7 +85,7 @@ export default function CategorySlider() {
       console.log(err);
     }
   }
-
+  
   useEffect(() => {
     getCategories();
   }, []);
