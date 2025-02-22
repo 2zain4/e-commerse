@@ -36,7 +36,7 @@ export default function Navbar() {
 
   return (
     <main className="pt-16 pb-3">
-      <nav className="bg-slate-300 border-gray-200 dark:bg-gray-900 fixed top-0 left-0 w-full z-[1000]">
+      <nav className="bg-white border-gray-200 dark:bg-gray-900 fixed top-0 left-0 w-full z-[1000]">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <Link to="/" className="flex items-center space-x-3">
             <FaShoppingCart className="text-[36px] text-[#4FA74F]" />
