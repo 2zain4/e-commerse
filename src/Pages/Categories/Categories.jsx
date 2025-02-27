@@ -20,13 +20,13 @@ export default function Categories() {
   return (
     <div className="container ">
       <Helmet><title>Categories</title></Helmet>
-
-      <div className="row p-[85px]">
-        {isLoading && <Loader />}
+      {isLoading && <Loader />}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+        
   
         {data?.data?.data?.map((category) => (
-          <div key={category._id} className="inner card-group h-[380px] p-3 rounded-md relative w-1/3">
-            <div className="card border product rounded-md relative h-[375px] overflow-hidden">
+          <div key={category._id} className="-3 rounded-md">
+            <div className="border product rounded-md overflow-hidden shadow-lg">
               <img
                 src={category.image}
                 className="card-img-top h-[300px] w-full object-cover object-top"
