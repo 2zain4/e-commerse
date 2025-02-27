@@ -1,6 +1,5 @@
 import { useFormik } from "formik";
-import { useContext, useState } from "react";
-import axios from "axios";
+import { useContext, useEffect, useState } from "react";
 import { CartContext } from "../../Context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
@@ -9,10 +8,10 @@ export default function Checkout() {
   const [errorMsg, setErrorMsg] = useState(null);
   const [successMsg, setSuccessMsg] = useState(null);
   const navigate = useNavigate();
-  const { cashOnDelivery, setCartId, setNumOfCartItems, onlinePayment , setCheckoutData} =
+  const { cashOnDelivery, setCartId, setNumOfCartItems, onlinePayment, setCheckoutData } =
     useContext(CartContext);
 
-  const initialValues = {
+  const savedData = JSON.parse(localStorage.getItem("checkoutData")) || {
     details: "",
     phone: "",
     city: "",
@@ -43,22 +42,39 @@ export default function Checkout() {
   }
 
   async function handleSubmit(data) {
-    setCheckoutData(data); 
+    setCheckoutData(data);
     
+    let savedOrders = JSON.parse(localStorage.getItem("checkoutHistory")) || [];
+  
+    savedOrders.push(data);
+  
+    localStorage.setItem("checkoutHistory", JSON.stringify(savedOrders));
+  
     try {
       let response = await onlinePayment({ shippingAddress: data });
       if (response.status === "success") {
+        localStorage.removeItem("checkoutData");
+        
         window.location.href = response.session.url;
       }
     } catch (error) {
       console.error("Error processing payment:", error);
     }
   }
+
+
+
+
+  
   const formik = useFormik({
-    initialValues,
+    initialValues: savedData,
     validate: validateData,
     onSubmit: handleSubmit,
   });
+
+  useEffect(() => {
+    localStorage.setItem("checkoutData", JSON.stringify(formik.values));
+  }, [formik.values]);
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 p-3 w-full mx-auto">
@@ -145,7 +161,7 @@ export default function Checkout() {
 
         <button
           type="submit"
-          className="btn bg-transparent text-[#0DCAF0] border-[#0DCAF0] hover:bg-[#0DCAF0] hover:text-black w-5/6  "
+          className="btn bg-transparent text-[#0DCAF0] border-[#0DCAF0] hover:bg-[#0DCAF0] hover:text-black w-5/6"
         >
           Pay Now
         </button>
@@ -153,9 +169,3 @@ export default function Checkout() {
     </div>
   );
 }
-
-
-
-
-
-

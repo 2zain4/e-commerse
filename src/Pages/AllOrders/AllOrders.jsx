@@ -4,6 +4,7 @@ import { CartContext } from "../../Context/CartContext";
 export default function AllOrders() {
   const { checkoutData, getLoggedCartData } = useContext(CartContext);
   const [cartData, setCartData] = useState(null);
+  const [storedCheckoutHistory, setStoredCheckoutHistory] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -17,6 +18,9 @@ export default function AllOrders() {
       }
     }
     fetchData();
+
+    const savedCheckoutHistory = JSON.parse(localStorage.getItem("checkoutHistory")) || [];
+    setStoredCheckoutHistory(savedCheckoutHistory);
   }, []);
 
   return (
@@ -45,15 +49,19 @@ export default function AllOrders() {
         <p>Loading cart data...</p>
       )}
 
-      {checkoutData ? (
+      {storedCheckoutHistory.length > 0 ? (
         <div className="border p-4 rounded-md mt-5">
-          <h3 className="text-xl font-semibold">Shipping Details</h3>
-          <p><strong>City:</strong> {checkoutData.city}</p>
-          <p><strong>Phone:</strong> {checkoutData.phone}</p>
-          <p><strong>Details:</strong> {checkoutData.details}</p>
+          <h3 className="text-xl font-semibold">Previous Orders</h3>
+          {storedCheckoutHistory.map((order, index) => (
+            <div key={index} className="mb-4 p-2 border-b">
+              <p><strong>City:</strong> {order.city}</p>
+              <p><strong>Phone:</strong> {order.phone}</p>
+              <p><strong>Details:</strong> {order.details}</p>
+            </div>
+          ))}
         </div>
       ) : (
-        <p>No shipping details available.</p>
+        <p>No previous orders available.</p>
       )}
     </div>
   );
